@@ -11,11 +11,14 @@ CC     = mpicc
 CFLAGS = -O2 -Wall
 NP     = 4
 
-TARGETS = sum_scatter sum_gather sum_reduce sum_allreduce sum_scan
+TARGETS = sum_bcast sum_scatter sum_gather sum_reduce sum_allreduce sum_scan
 
 .PHONY: all run clean
 
 all: $(TARGETS)
+
+sum_bcast: Exercise01/sum_bcast.c
+	$(CC) $(CFLAGS) -o $@ $<
 
 sum_scatter: Exercise02/sum_scatter.c
 	$(CC) $(CFLAGS) -o $@ $<
@@ -33,6 +36,9 @@ sum_scan: Exercise06/sum_scan.c
 	$(CC) $(CFLAGS) -o $@ $<
 
 run: all
+	@echo "=== Exercise 1: sum_bcast ($(NP) procs) ==="
+	mpirun -np $(NP) ./sum_bcast
+	@echo ""
 	@echo "=== Exercise 2: sum_scatter ($(NP) procs) ==="
 	mpirun -np $(NP) ./sum_scatter
 	@echo ""
